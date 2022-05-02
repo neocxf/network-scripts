@@ -1,0 +1,30 @@
+ENV['VAGRANT_DEFAULT_PROVIDER'] = 'libvirt'
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/jessie64"
+      
+  # https://www.rubydoc.info/gems/vagrant-libvirt/0.0.28
+  config.vm.provider :libvirt do |v|
+    v.cpus=1
+    v.memory=512
+    v.default_prefix="test2"
+  end
+
+  config.vm.define "vm1" do |srv|
+    srv.vm.hostname = "vm1"
+    srv.vm.network :private_network,
+      :type => "dhcp",
+      :libvirt__network_name => "my-network"
+    # # Public Network
+    # srv.vm.network :public_network,
+    #     :dev => "virbr0",
+    #     :mode => "bridge",
+    #     :type => "bridge"
+  end
+
+  config.vm.define "vm2" do |srv|
+    srv.vm.hostname = "vm2"
+    srv.vm.network :private_network,
+        :type => "dhcp",
+        :libvirt__network_name => "my-network"
+  end
+end

@@ -1,0 +1,47 @@
+Vagrant.configure("2") do |config|
+    config.vm.box = "ubuntu/impish64"
+  
+    config.vm.provider "virtualbox" do |vb|
+      vb.cpus = 2
+      vb.memory = 2048
+      vb.check_guest_additions = false
+    end
+
+    $nfs_server_init = <<__EOF__
+    sudo apt-get update
+    sudo apt-get install -qq vim net-tools
+    sudo apt-get install -y nfs-kernel-server
+    sudo mkdir -p /var/nfs
+    sudo touch /var/nfs/hello.txt
+    echo '/var/nfs *(rw,sync,fsid=0,no_root_squash,no_subtree_check)' | sudo tee -a /etc/exports
+    
+    sed -i 's/RPCMOUNTDOPTS=.*/RPCMOUNTDOPTS="--no-nfs-version 2 --no-nfs-version 3 --nfs-version 4 --no-udp"/' /etc/default/nfs-kernel-server 
+    tee -a  /etc/default/nfs-kernel-server << __NFS_SERVER_CONF__
+RPCNFSDOPTS="--no-nfs-version 2 --no-nfs-version 3 --nfs-version 4 --no-udp"
+__NFS_SERVER_CONF__
+
+    sudo systemctl restart nfs-server
+__EOF__
+
+    $nfs_client_init = <<__EOF__
+    sudo apt-get update
+    sudo apt-get install -qq vim net-tools
+    sudo apt-get install -y nfs-common
+    sudo mkdir -p /mnt/nfs
+    echo '192.168.9.3:/ /mnt/nfs nfs4 intr 0 0' | sudo tee -a /etc/fstab
+__EOF__
+
+    config.vm.define "nfs-server" do |srv|
+      srv.vm.hostname = "nfs-server"
+      srv.vbguest.auto_update = false
+      srv.vm.network :private_network, ip: "192.168.56.3"
+      srv.vm.provision "shell", inline: $nfs_server_init
+    end
+  
+    config.vm.define "nfs-client" do |srv|
+      srv.vm.hostname = "nfs-client"
+      srv.vbguest.auto_update = false
+      srv.vm.network :private_network, ip: "192.168.56.4"
+      srv.vm.provision "shell", inline: $nfs_client_init
+    end
+  end

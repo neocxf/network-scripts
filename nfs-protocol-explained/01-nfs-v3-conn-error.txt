@@ -1,0 +1,95 @@
+03:53:16 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 3
+03:53:16 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+03:53:16 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 3
+03:53:16 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+03:53:16 socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP) = 3
+03:53:16 connect(3, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("127.0.0.1")}, 16) = 0
+03:53:16 getsockname(3, {sa_family=AF_INET, sin_port=htons(38499), sin_addr=inet_addr("127.0.0.1")}, [128->16]) = 0
+03:53:16 getsockopt(3, SOL_SOCKET, SO_TYPE, [2], [4]) = 0
+03:53:16 setsockopt(3, SOL_IP, IP_RECVERR, [1], 4) = 0
+03:53:16 sendto(3, "bAyX\0\0\0\0\0\0\0\2\0\1\206\240\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0"..., 56, 0, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("127.0.0.1")}, 16) = 56
+03:53:16 recvfrom(3, "bAyX\0\0\0\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\17\243", 8800, 0, NULL, NULL) = 28
+03:53:16 socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP) = 3
+03:53:16 connect(3, {sa_family=AF_INET, sin_port=htons(4003), sin_addr=inet_addr("127.0.0.1")}, 16) = 0
+03:53:16 getsockname(3, {sa_family=AF_INET, sin_port=htons(57771), sin_addr=inet_addr("127.0.0.1")}, [128->16]) = 0
+03:53:16 getsockopt(3, SOL_SOCKET, SO_TYPE, [2], [4]) = 0
+03:53:16 setsockopt(3, SOL_IP, IP_RECVERR, [1], 4) = 0
+03:53:16 sendto(3, "bAu\322\0\0\0\0\0\0\0\2\0\1\206\270\0\0\0\1\0\0\0\0\0\0\0\0\0\0\0\0"..., 40, 0, {sa_family=AF_INET, sin_port=htons(4003), sin_addr=inet_addr("127.0.0.1")}, 16) = 40
+03:53:16 recvfrom(3, "bAu\322\0\0\0\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0", 8800, 0, NULL, NULL) = 24
+03:53:16 socket(AF_INET, SOCK_STREAM, IPPROTO_TCP) = 3
+03:53:16 connect(3, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("13.212.141.66")}, 16) = -1 EINPROGRESS (Operation now in progress)
+03:53:26 socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP) = 3
+03:53:26 connect(3, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("13.212.141.66")}, 16) = 0
+03:53:26 getsockname(3, {sa_family=AF_INET, sin_port=htons(41880), sin_addr=inet_addr("172.16.10.91")}, [128->16]) = 0
+03:53:26 getsockopt(3, SOL_SOCKET, SO_TYPE, [2], [4]) = 0
+03:53:26 setsockopt(3, SOL_IP, IP_RECVERR, [1], 4) = 0
+03:53:26 sendto(3, "bA\216_\0\0\0\0\0\0\0\2\0\1\206\240\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0"..., 56, 0, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("13.212.141.66")}, 16) = 56
+03:53:27 sendto(3, "bA\216_\0\0\0\0\0\0\0\2\0\1\206\240\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0"..., 56, 0, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("13.212.141.66")}, 16) = 56
+03:53:28 sendto(3, "bA\216_\0\0\0\0\0\0\0\2\0\1\206\240\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0"..., 56, 0, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("13.212.141.66")}, 16) = 56
+03:53:29 socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP) = 3
+03:53:29 connect(3, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("127.0.0.1")}, 16) = 0
+03:53:29 getsockname(3, {sa_family=AF_INET, sin_port=htons(49970), sin_addr=inet_addr("127.0.0.1")}, [128->16]) = 0
+03:53:29 getsockopt(3, SOL_SOCKET, SO_TYPE, [2], [4]) = 0
+03:53:29 setsockopt(3, SOL_IP, IP_RECVERR, [1], 4) = 0
+03:53:29 sendto(3, "bA\265\235\0\0\0\0\0\0\0\2\0\1\206\240\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0"..., 56, 0, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("127.0.0.1")}, 16) = 56
+03:53:29 recvfrom(3, "bA\265\235\0\0\0\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\17\243", 8800, 0, NULL, NULL) = 28
+03:53:29 socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP) = 3
+03:53:29 connect(3, {sa_family=AF_INET, sin_port=htons(4003), sin_addr=inet_addr("127.0.0.1")}, 16) = 0
+03:53:29 getsockname(3, {sa_family=AF_INET, sin_port=htons(33001), sin_addr=inet_addr("127.0.0.1")}, [128->16]) = 0
+03:53:29 getsockopt(3, SOL_SOCKET, SO_TYPE, [2], [4]) = 0
+03:53:29 setsockopt(3, SOL_IP, IP_RECVERR, [1], 4) = 0
+03:53:29 sendto(3, "bA\266]\0\0\0\0\0\0\0\2\0\1\206\270\0\0\0\1\0\0\0\0\0\0\0\0\0\0\0\0"..., 40, 0, {sa_family=AF_INET, sin_port=htons(4003), sin_addr=inet_addr("127.0.0.1")}, 16) = 40
+03:53:29 recvfrom(3, "bA\266]\0\0\0\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0", 8800, 0, NULL, NULL) = 24
+03:53:29 socket(AF_INET, SOCK_STREAM, IPPROTO_TCP) = 3
+03:53:29 connect(3, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("13.212.141.66")}, 16) = -1 EINPROGRESS (Operation now in progress)
+03:53:39 socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP) = 3
+03:53:39 connect(3, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("13.212.141.66")}, 16) = 0
+03:53:39 getsockname(3, {sa_family=AF_INET, sin_port=htons(56202), sin_addr=inet_addr("172.16.10.91")}, [128->16]) = 0
+03:53:39 getsockopt(3, SOL_SOCKET, SO_TYPE, [2], [4]) = 0
+03:53:39 setsockopt(3, SOL_IP, IP_RECVERR, [1], 4) = 0
+03:53:39 sendto(3, "bA\302\232\0\0\0\0\0\0\0\2\0\1\206\240\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0"..., 56, 0, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("13.212.141.66")}, 16) = 56
+03:53:40 sendto(3, "bA\302\232\0\0\0\0\0\0\0\2\0\1\206\240\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0"..., 56, 0, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("13.212.141.66")}, 16) = 56
+03:53:41 sendto(3, "bA\302\232\0\0\0\0\0\0\0\2\0\1\206\240\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0"..., 56, 0, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("13.212.141.66")}, 16) = 56
+03:53:42 socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP) = 3
+03:53:42 connect(3, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("127.0.0.1")}, 16) = 0
+03:53:42 getsockname(3, {sa_family=AF_INET, sin_port=htons(43616), sin_addr=inet_addr("127.0.0.1")}, [128->16]) = 0
+03:53:42 getsockopt(3, SOL_SOCKET, SO_TYPE, [2], [4]) = 0
+03:53:42 setsockopt(3, SOL_IP, IP_RECVERR, [1], 4) = 0
+03:53:42 sendto(3, "bA\356H\0\0\0\0\0\0\0\2\0\1\206\240\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0"..., 56, 0, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("127.0.0.1")}, 16) = 56
+03:53:42 recvfrom(3, "bA\356H\0\0\0\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\17\243", 8800, 0, NULL, NULL) = 28
+03:53:42 socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP) = 3
+03:53:42 connect(3, {sa_family=AF_INET, sin_port=htons(4003), sin_addr=inet_addr("127.0.0.1")}, 16) = 0
+03:53:42 getsockname(3, {sa_family=AF_INET, sin_port=htons(37388), sin_addr=inet_addr("127.0.0.1")}, [128->16]) = 0
+03:53:42 getsockopt(3, SOL_SOCKET, SO_TYPE, [2], [4]) = 0
+03:53:42 setsockopt(3, SOL_IP, IP_RECVERR, [1], 4) = 0
+03:53:42 sendto(3, "bA\352\241\0\0\0\0\0\0\0\2\0\1\206\270\0\0\0\1\0\0\0\0\0\0\0\0\0\0\0\0"..., 40, 0, {sa_family=AF_INET, sin_port=htons(4003), sin_addr=inet_addr("127.0.0.1")}, 16) = 40
+03:53:42 recvfrom(3, "bA\352\241\0\0\0\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0", 8800, 0, NULL, NULL) = 24
+03:53:42 socket(AF_INET, SOCK_STREAM, IPPROTO_TCP) = 3
+03:53:42 connect(3, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("13.212.141.66")}, 16) = -1 EINPROGRESS (Operation now in progress)
+03:53:52 socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP) = 3
+03:53:52 connect(3, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("13.212.141.66")}, 16) = 0
+03:53:52 getsockname(3, {sa_family=AF_INET, sin_port=htons(50935), sin_addr=inet_addr("172.16.10.91")}, [128->16]) = 0
+03:53:52 getsockopt(3, SOL_SOCKET, SO_TYPE, [2], [4]) = 0
+03:53:52 setsockopt(3, SOL_IP, IP_RECVERR, [1], 4) = 0
+03:53:52 sendto(3, "bN>\177\0\0\0\0\0\0\0\2\0\1\206\240\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0"..., 56, 0, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("13.212.141.66")}, 16) = 56
+03:53:53 sendto(3, "bN>\177\0\0\0\0\0\0\0\2\0\1\206\240\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0"..., 56, 0, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("13.212.141.66")}, 16) = 56
+03:53:54 sendto(3, "bN>\177\0\0\0\0\0\0\0\2\0\1\206\240\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0"..., 56, 0, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("13.212.141.66")}, 16) = 56
+03:53:55 socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP) = 3
+03:53:55 connect(3, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("127.0.0.1")}, 16) = 0
+03:53:55 getsockname(3, {sa_family=AF_INET, sin_port=htons(34311), sin_addr=inet_addr("127.0.0.1")}, [128->16]) = 0
+03:53:55 getsockopt(3, SOL_SOCKET, SO_TYPE, [2], [4]) = 0
+03:53:55 setsockopt(3, SOL_IP, IP_RECVERR, [1], 4) = 0
+03:53:55 sendto(3, "bN*\25\0\0\0\0\0\0\0\2\0\1\206\240\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0"..., 56, 0, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("127.0.0.1")}, 16) = 56
+03:53:55 recvfrom(3, "bN*\25\0\0\0\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\17\243", 8800, 0, NULL, NULL) = 28
+03:53:55 socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP) = 3
+03:53:55 connect(3, {sa_family=AF_INET, sin_port=htons(4003), sin_addr=inet_addr("127.0.0.1")}, 16) = 0
+03:53:55 getsockname(3, {sa_family=AF_INET, sin_port=htons(53275), sin_addr=inet_addr("127.0.0.1")}, [128->16]) = 0
+03:53:55 getsockopt(3, SOL_SOCKET, SO_TYPE, [2], [4]) = 0
+03:53:55 setsockopt(3, SOL_IP, IP_RECVERR, [1], 4) = 0
+03:53:55 sendto(3, "bN&y\0\0\0\0\0\0\0\2\0\1\206\270\0\0\0\1\0\0\0\0\0\0\0\0\0\0\0\0"..., 40, 0, {sa_family=AF_INET, sin_port=htons(4003), sin_addr=inet_addr("127.0.0.1")}, 16) = 40
+03:53:55 recvfrom(3, "bN&y\0\0\0\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0", 8800, 0, NULL, NULL) = 24
+03:53:55 socket(AF_INET, SOCK_STREAM, IPPROTO_TCP) = 3
+03:53:55 connect(3, {sa_family=AF_INET, sin_port=htons(111), sin_addr=inet_addr("13.212.141.66")}, 16) = -1 EINPROGRESS (Operation now in progress)
+03:53:58 --- SIGINT {si_signo=SIGINT, si_code=SI_KERNEL} ---
+03:53:58 +++ killed by SIGINT +++
+

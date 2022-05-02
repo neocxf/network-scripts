@@ -1,0 +1,24 @@
+Vagrant.configure("2") do |config|
+    config.vm.box = "ubuntu/impish64"
+  
+    config.vm.provider "virtualbox" do |vb|
+      vb.cpus = 2
+      vb.memory = 4096
+      vb.check_guest_additions = false
+    end
+
+    $init_script = <<'__EOF__'
+sed -i -e 's/http:\/\/[^\/]*/http:\/\/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+sudo apt-get update
+sudo apt-get install -y vim net-tools openvswitch-switch virtualbox
+__EOF__
+
+    config.vm.define "ovs-bridge" do |srv|
+      srv.vm.disk :disk, size: "32GB", primary: true
+      srv.vm.hostname = "ovs-bridge"
+      srv.vbguest.auto_update = false
+      srv.vm.network :private_network, ip: "192.168.56.3"
+      srv.vm.provision "shell", inline: $init_script
+    end
+
+  end

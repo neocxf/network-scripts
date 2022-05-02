@@ -1,0 +1,6 @@
+03:56:40 socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP) = 3
+03:56:40 bind(3, {sa_family=AF_INET, sin_port=htons(0), sin_addr=inet_addr("0.0.0.0")}, 16) = 0
+03:56:40 connect(3, {sa_family=AF_INET, sin_port=htons(0), sin_addr=inet_addr("13.212.141.66")}, 16) = 0
+03:56:40 getsockname(3, {sa_family=AF_INET, sin_port=htons(38417), sin_addr=inet_addr("172.16.10.91")}, [28->16]) = 0
+03:56:40 +++ exited with 0 +++
+
