@@ -1,0 +1,78 @@
+---
+- name: Playbook to setup kvm and libvirt env
+  hosts: "all"
+  become: "yes"
+  remote_user: "vagrant"
+  gather_facts: no
+
+  tasks:
+  #   shell: sed -i -e 's/http:\/\/[^\/]*/http:\/\/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+  - name: Update apt repository
+    replace:
+      path: /etc/apt/sources.list
+      regexp: 'http:\/\/[^\/]*'
+      replace: 'http://mirrors.ustc.edu.cn'
+      backup: yes
+  - name: Ansible Update Cache
+    register: updatesys
+    apt:
+      name: "*"
+      update_cache: yes
+  - name: "Install KVM and Libvirt"
+    apt:
+      state: "present"
+      name: 
+      #  qemu qemu-kvm libvirt-clients libvirt-daemon-system virtinst bridge-utils libxslt-dev libxml2-dev libvirt-dev zlib1g-dev ruby-dev
+      - qemu
+      - qemu-kvm
+      - libvirt-clients
+      - libvirt-daemon-system
+      - virtinst
+      - net-tools
+    register: command_output
+  - debug:
+      var: command_output.stdout_lines
+  - name: Update libvirt
+    shell: 
+      cmd: |
+        usermod -a -G libvirt vagrant
+        sed -i 's/#user = "root"/user = "vagrant"/g' /etc/libvirt/qemu.conf
+        sed -i 's/#group = "root"/group = "libvirt"/g' /etc/libvirt/qemu.conf
+  - name: Restart libvirtd.service
+    systemd:
+      state: restarted
+      daemon_reload: yes
+      name: libvirtd
+
+- name: Playbook to setup proxy
+  hosts: all
+  become: "yes"
+  gather_facts: no
+  remote_user: "vagrant"
+
+  tasks:
+  - name: Install docker.io
+    apt:
+      name: docker.io
+      state: present
+  - name: Copy v2ray.service to systemd
+    copy:
+      src: v2ray.service
+      dest: /etc/systemd/system/v2ray.service
+      owner: vagrant
+      group: vagrant
+  - name: Restart v2ray.service
+    systemd:
+      state: started
+      daemon_reload: yes
+      name: v2ray
+  - name: Copy proxy to /usr/local/bin/
+    copy:
+      src: proxy
+      dest: /usr/local/bin/proxy
+      mode: 0755
+  - name: Make vagrant use docker directly
+    shell:
+      cmd: |
+        usermod -aG docker vagrant
+

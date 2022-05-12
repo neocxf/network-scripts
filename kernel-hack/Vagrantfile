@@ -1,0 +1,70 @@
+VAGRANTFILE_API_VERSION = 2
+# Require 'yaml' module
+require 'yaml'
+
+# Read YAML file with VM details (box, CPU, RAM, IP addresses)
+# Edit machines.yml to change VM configuration details
+machines = YAML.load_file(File.join(File.dirname(__FILE__), 'machines.yml'))
+# Create and configure the VMs
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  # Always use Vagrant's default insecure key
+  config.ssh.insert_key = false
+
+  # Iterate through entries in YAML file to create VMs
+  machines.each do |machine|
+
+    # Configure the VMs per details in machines.yml
+    config.vm.define machine['name'] do |srv|
+
+      if Vagrant.has_plugin?("vagrant-vbguest")
+        config.vbguest.auto_update = false
+      end
+
+      # Don't check for box updates
+      srv.vm.box_check_update = false
+
+      # Specify the hostname of the VM
+      srv.vm.hostname = machine['name']
+
+      # Specify the Vagrant box to use (must use VMware box)
+      srv.vm.box = machine['vmw_box']
+
+      # Configure default synced folder (disable by default)
+      if machine['sync_disabled'] != nil
+        srv.vm.synced_folder '.', '/vagrant', disabled: machine['sync_disabled']
+      else
+        srv.vm.synced_folder '.', '/vagrant', disabled: true
+      end #if machine['sync_disabled']
+
+      # Assign additional private network
+      if machine['ip_addr'] != nil
+        srv.vm.network 'private_network', ip: machine['ip_addr']
+      end # if machine['ip_addr']
+
+      # Configure CPU & RAM per settings in machines.yml (Fusion)
+      srv.vm.provider 'virtualbox' do |vmw|
+        vmw.memory = machine['ram']
+        vmw.cpus = machine['vcpu']
+        vmw.gui = false
+        vmw.check_guest_additions =  false
+      end # srv.vm.provider 'vmware_fusion'
+
+      # # Configure CPU & RAM per settings in machines.yml (Fusion)
+      # srv.vm.provider 'virtualbox' do |vmw|
+      #   vmw.vmx['memsize'] = machine['ram']
+      #   vmw.vmx['numvcpus'] = machine['vcpu']
+
+      #   # Enable nested virtualization (required for KVM)
+      #   vmw.vmx['vhv.enable'] = 'TRUE'
+      # end # srv.vm.provider 'vmware_fusion'
+
+      # Provision the VM with Ansible if enabled in machines.yml
+      if machine['provision'] != nil
+        srv.vm.provision 'ansible' do |ansible|
+          ansible.playbook = machine['provision']
+        end # srv.vm.provision
+      end # if machine['provision']
+    end # config.vm.define
+  end # machines.each
+end # Vagrant.configure

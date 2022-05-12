@@ -8,6 +8,13 @@ sudo lscpu | grep Virtualization
 
 sudo apt install qemu qemu-kvm libvirt-clients libvirt-daemon-system virtinst bridge-utils
 
+# add current user to libvirt to avoid the sudo pass
+# https://ostechnix.com/solved-cannot-access-storage-file-permission-denied-error-in-kvm-libvirt/
+sudo usermod -a -G libvirt $(whoami)
+
+sudo sed -i "s/#user = root/user = $(whoami)/g" /etc/libvirt/qemu.conf
+sudo sed -i "s/#group = root/group = libvirt/g" /etc/libvirt/qemu.conf
+sudo systemctl restart libvirtd
 
 sudo systemctl enable libvirtd
 sudo systemctl start libvirtd
@@ -35,17 +42,15 @@ vagrant plugin install vagrant-mutate
 ## start the vm
 
 ```bash
-# https://www.rubydoc.info/gems/vagrant-libvirt/0.2.1#possible-problems-with-plugin-installation-on-linux
 
+# verify using the virt-manager
+sudo apt install virt-manager -y
+
+# https://www.rubydoc.info/gems/vagrant-libvirt/0.2.1#possible-problems-with-plugin-installation-on-linux
 vagrant up
 
 # make sure the vms up
 virsh list
-
-# verify using the virt-manager
-sudo apt install virt-manager
-# add current user to libvirt to avoid the sudo pass
-sudo usermod -a -G libvirt $(whoami)
 
 ```
 
