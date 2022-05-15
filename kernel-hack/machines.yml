@@ -1,8 +1,10 @@
 ---
 - name: "kernel"
-  vmw_box: "ubuntu/focal64"
-  ram: "4096"
-  vcpu: "2"
-  ip_addr: "192.168.100.100"
+  vmw_box: "peru/ubuntu-20.04-desktop-amd64"
+  ram: "8192"
+  vcpu: "6"
+  ip_addr: "192.168.65.100"
+  pub_ip_addr: "192.168.1.100"
   nested: true
   provision: "provision.yml"
+  sync_disabled: false

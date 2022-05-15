@@ -2,19 +2,6 @@ VAGRANTFILE_API_VERSION = 2
 # Require 'yaml' module
 require 'yaml'
 
-if Gem.win_platform?
-  # Install vagrant-disksize to allow resizing the vagrant box disk.
-  unless Vagrant.has_plugin?("vagrant-disksize")
-      raise  Vagrant::Errors::VagrantError.new, "vagrant-disksize plugin is missing. Please install it using 'vagrant plugin install vagrant-disksize' and rerun 'vagrant up'"
-  end
-  unless Vagrant.has_plugin?("vagrant-guest_ansible")
-      raise  Vagrant::Errors::VagrantError.new, "vagrant-guest_ansible plugin is missing. Please install it using 'vagrant plugin install vagrant-guest_ansible' and rerun 'vagrant up'"
-  end
-  unless Vagrant.has_plugin?("vagrant-winnfsd")
-      raise  Vagrant::Errors::VagrantError.new, "vagrant-winnfsd plugin is missing. Please install it using 'vagrant plugin install vagrant-winnfsd' and rerun 'vagrant up'"
-  end
-end
-
 # Read YAML file with VM details (box, CPU, RAM, IP addresses)
 # Edit machines.yml to change VM configuration details
 machines = YAML.load_file(File.join(File.dirname(__FILE__), 'machines.yml'))
@@ -23,7 +10,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Always use Vagrant's default insecure key
   config.ssh.insert_key = true
-  config.disksize.size = '120GB'
 
   provisioner = Vagrant::Util::Platform.windows? ? :guest_ansible : :ansible
 
@@ -47,6 +33,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       srv.vm.box = machine['vmw_box']
 
       # Configure default synced folder (disable by default)
+      srv.vm.synced_folder '.', '/vagrant', disabled: false
       if machine['sync_disabled'] != nil
         srv.vm.synced_folder '.', '/vagrant', disabled: machine['sync_disabled']
       else
@@ -61,14 +48,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         srv.vm.network 'public_network', ip: machine['pub_ip_addr']
       end
 
-      # Configure CPU & RAM per settings in machines.yml (Virtualbox)
-      srv.vm.provider 'virtualbox' do |vb|
-        vb.customize ['modifyvm', :id, '--nested-hw-virt', 'on']
-        vb.memory = machine['ram']
-        vb.cpus = machine['vcpu']
-        vb.gui = false
-        vb.check_guest_additions =  false
-      end # srv.vm.provider 'Virtualbox'
+      # Configure CPU & RAM per settings in machines.yml (Fusion)
+      srv.vm.provider 'virtualbox' do |vmw|
+        vmw.memory = machine['ram']
+        vmw.cpus = machine['vcpu']
+        vmw.gui = false
+        vmw.check_guest_additions =  false
+      end # srv.vm.provider 'vmware_fusion'
 
       $init_script = <<'__EOF__'
 sed -i -e 's/http:\/\/[^\/]*/http:\/\/mirrors.ustc.edu.cn/g' /etc/apt/sources.list

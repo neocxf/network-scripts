@@ -1,3 +1,5 @@
 .vagrant
 
 images/
+.vscode/
+vagrant_ansible_*

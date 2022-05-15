@@ -29,9 +29,7 @@
       - libvirt-daemon-system
       - virtinst
       - net-tools
-      - virt-manager
       - dos2unix
-      - gparted
     register: command_output
   - debug:
       var: command_output.stdout_lines
@@ -81,27 +79,3 @@
         dos2unix /usr/local/bin/proxy
         usermod -aG docker vagrant
 
-- name: Playbook to setup kernel-module-cheatsheet
-  hosts: all
-  become: "no"
-  gather_facts: no
-  remote_user: "vagrant"
-  vars:
-    proxy_env:
-      http_proxy: http://localhost:1087
-      https_proxy: http://localhost:1087
-  environment: "{{proxy_env}}"
-
-  tasks:
-  - name: Install linux-kernel-module-cheat
-    ansible.builtin.git:
-      repo: https://github.com/cirosantilli/linux-kernel-module-cheat.git
-      dest: /home/vagrant/linux-kernel-module-cheat
-      single_branch: no
-      version: master
-    
-  - name: Install CxxCodeBrowser
-    ansible.builtin.git:
-      repo: https://github.com/rprichard/CxxCodeBrowser.git
-      dest: /home/vagrant/CxxCodeBrowser
-  
