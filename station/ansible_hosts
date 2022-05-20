@@ -1,2 +1,4 @@
-[macvtap]
-192.168.100.100
+[station]
+192.168.65.200
+[station:vars]
+author=neo.chen

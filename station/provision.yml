@@ -29,7 +29,11 @@
       - libvirt-daemon-system
       - virtinst
       - net-tools
+      - virt-manager
       - dos2unix
+      - gparted
+      - jq
+      - xclip
     register: command_output
   - debug:
       var: command_output.stdout_lines
@@ -79,3 +83,46 @@
         dos2unix /usr/local/bin/proxy
         usermod -aG docker vagrant
 
+
+- name: Playbook various softwares
+  hosts: all
+  become: "no"
+  gather_facts: no
+  remote_user: "vagrant"
+  vars:
+    proxy_env:
+      http_proxy: http://localhost:1087
+      https_proxy: http://localhost:1087
+  environment: "{{proxy_env}}"
+
+  tasks:
+  - name: Get latest docker compose download url
+    shell: curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r '.assets[] | select (.name == "docker-compose-linux-x86_64") | .browser_download_url'
+    register: compose_url
+  - debug: 
+      var: compose_url.stdout
+  - name: Install docker-compose executable
+    become_user: vagrant
+    get_url:
+      url: "{{ compose_url.stdout }}"
+      dest: "$HOME/.docker/cli-plugins/docker-compose"
+      mode: u+x
+      validate_certs: no
+      timeout: 30
+  - name: Install snap soft
+    community.general.snap:
+      name:
+      - code
+      - kubectl
+      - go   
+      classic: yes
+  - name: Install apt soft
+    apt:
+      state: present
+      name: 
+      - awscli
+      - htop
+      - tree
+      - jq
+      - wireshark-qt
+      - ipvsadm
