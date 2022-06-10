@@ -32,6 +32,7 @@
       - virt-manager
       - dos2unix
       - gparted
+      - wireshark
     register: command_output
   - debug:
       var: command_output.stdout_lines
