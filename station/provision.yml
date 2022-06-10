@@ -2,9 +2,10 @@
 - name: Playbook to setup kvm and libvirt env
   hosts: "all"
   become: "yes"
-  remote_user: "vagrant"
+  remote_user: "{{ ansible_user }}"
   gather_facts: no
-
+  tags:
+  - libvirt
   tasks:
   #   shell: sed -i -e 's/http:\/\/[^\/]*/http:\/\/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
   - name: Update apt repository
@@ -18,13 +19,15 @@
     apt:
       name: "*"
       update_cache: yes
+      autoclean: yes
+      autoremove: yes
   - name: "Install KVM and Libvirt"
     apt:
       state: "present"
       name: 
-      #  qemu qemu-kvm libvirt-clients libvirt-daemon-system virtinst bridge-utils libxslt-dev libxml2-dev libvirt-dev zlib1g-dev ruby-dev
       - qemu
       - qemu-kvm
+      - libvirt-dev
       - libvirt-clients
       - libvirt-daemon-system
       - virtinst
@@ -34,15 +37,27 @@
       - gparted
       - jq
       - xclip
+      - lua5.1
+      - gnome-keyring
     register: command_output
   - debug:
       var: command_output.stdout_lines
-  - name: Update libvirt
-    shell: 
-      cmd: |
-        usermod -a -G libvirt vagrant
-        sed -i 's/#user = "root"/user = "vagrant"/g' /etc/libvirt/qemu.conf
-        sed -i 's/#group = "root"/group = "libvirt"/g' /etc/libvirt/qemu.conf
+  - name: Adding existing user "{{ ansible_user }}" to group libvirt
+    user:
+      name: "{{ ansible_user }}"
+      groups: libvirt
+      append: yes
+    become: yes
+  - name: Change default qemu user to "{{ ansible_user }}"
+    ansible.builtin.replace:
+      path: /etc/libvirt/qemu.conf
+      regexp: '^#user =.*'
+      replace: 'user = "{{ ansible_user }}"'
+  - name: Change default qemu group to "libvirt"
+    ansible.builtin.replace:
+      path: /etc/libvirt/qemu.conf
+      regexp: '^#group =.*'
+      replace: 'group = "libvirt"'
   - name: Restart libvirtd.service
     systemd:
       state: restarted
@@ -53,19 +68,25 @@
   hosts: all
   become: "yes"
   gather_facts: no
-  remote_user: "vagrant"
+  remote_user: "{{ ansible_user }}"
+  tags:
+  - proxy
 
   tasks:
   - name: Install docker.io
     apt:
       name: docker.io
       state: present
+  - name: Ensure docker started
+    systemd:
+      name: docker
+      state: started
   - name: Copy v2ray.service to systemd
     copy:
       src: v2ray.service
       dest: /etc/systemd/system/v2ray.service
-      owner: vagrant
-      group: vagrant
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
   - name: Restart v2ray.service
     systemd:
       state: started
@@ -77,18 +98,48 @@
       src: proxy
       dest: /usr/local/bin/proxy
       mode: 0755
-  - name: Make vagrant use docker directly
+  - name: Change /usr/local/bin/proxy to unix format
     shell:
       cmd: |
         dos2unix /usr/local/bin/proxy
-        usermod -aG docker vagrant
+  - name: Adding existing user "{{ ansible_user }}" to group docker
+    user:
+      name: "{{ ansible_user }}"
+      groups: docker
+      append: yes
+    become: yes
+
+- name: Playbook to install network tools
+  hosts: all
+  become: "yes"
+  gather_facts: no
+  remote_user: "{{ ansible_user }}"
+  tags:
+  - network
+  
+  tasks:
+  - name: Install network apt softwares
+    apt:
+      state: present
+      name:
+      - ipvsadm
+      - ipset
+      - net-tools
+      - arping
+      - wireshark-qt
+      - bridge-utils
+      # - bird2
+      - ipcalc
+      - tshark
 
 
 - name: Playbook various softwares
   hosts: all
-  become: "no"
-  gather_facts: no
-  remote_user: "vagrant"
+  become: "yes"
+  gather_facts: yes
+  remote_user: "{{ ansible_user }}"
+  tags:
+  - misc
   vars:
     proxy_env:
       http_proxy: http://localhost:1087
@@ -101,20 +152,42 @@
     register: compose_url
   - debug: 
       var: compose_url.stdout
+  - name: Create $HOME/.docker/cli-plugins/ dir
+    become_user: "{{ ansible_user }}"
+    ansible.builtin.file:
+      path: $HOME/.docker/cli-plugins/
+      state: directory
+      mode: '0755'
   - name: Install docker-compose executable
-    become_user: vagrant
+    become_user: "{{ ansible_user }}"
     get_url:
       url: "{{ compose_url.stdout }}"
       dest: "$HOME/.docker/cli-plugins/docker-compose"
       mode: u+x
       validate_certs: no
       timeout: 30
+  - name: Get latest kube-prompt version
+    shell: curl -s https://api.github.com/repos/c-bata/kube-prompt/releases/latest | jq -r '.tag_name'
+    register: kube_prompt_version
+  - debug: 
+      var: kube_prompt_version.stdout
+  - name: Install kube-prompt
+    ansible.builtin.unarchive:
+      src: "https://github.com/c-bata/kube-prompt/releases/download/{{ kube_prompt_version.stdout }}/kube-prompt_{{ kube_prompt_version.stdout }}_linux_amd64.zip"
+      dest: /usr/local/bin
+      remote_src: yes
+  - name: Copy switch to /usr/local/bin/
+    copy:
+      src: switch
+      dest: /usr/local/bin/switch
+      mode: 0755
   - name: Install snap soft
     community.general.snap:
       name:
       - code
       - kubectl
-      - go   
+      - multipass
+      - helm   
       classic: yes
   - name: Install apt soft
     apt:
@@ -124,5 +197,92 @@
       - htop
       - tree
       - jq
-      - wireshark-qt
-      - ipvsadm
+      - zsh
+  - name: Install Oh My Zsh
+    shell: curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    register: myzsh
+    failed_when: myzsh.rc not in [0,1]
+
+- name: Playbook to show some env
+  hosts: all
+  gather_facts: yes
+  tags:
+  - misc
+  tasks:
+  - debug: var=hostvars[inventory_hostname].private_ipv4
+  - debug: var=hostvars[inventory_hostname]['ansible_default_ipv4']['address']
+
+  - name: get user home directory
+    shell: >
+      getent passwd {{ ansible_user }}  | awk -F: '{ print $6 }'
+    changed_when: false
+    register: user_home
+
+  - name: debug output
+    debug:
+      var: user_home.stdout
+
+- name: Playbook of install golang package
+  hosts: all
+  become: yes
+  gather_facts: yes
+  remote_user: "{{ ansible_user }}"
+  tags:
+  - golang
+  roles:
+  - gantsign.golang
+  - fubarhouse.golang
+  vars:
+    proxy_env:
+      http_proxy: http://localhost:1087
+      https_proxy: http://localhost:1087
+    golang_version: '1.18.2'
+    GOPATH: "/home/{{ ansible_user }}/go"
+    go_get:
+      - name: gopm
+        url: sigs.k8s.io/kind@v0.14.0
+  environment: "{{proxy_env}}"
+  tasks:
+  - name: Adding go bin path to .bashrc file
+    lineinfile: dest=/home/{{ ansible_user }}/.bashrc line='export PATH=$PATH:$HOME/go/bin' insertafter='EOF' regexp='export PATH=\$PATH:\$HOME/go/bin' state=present
+  # - import_role:
+  #     name: fubarhouse.golang
+  #   become_user: root
+  #   vars:
+  #     go_get:
+  #     - name: gopm
+  #       url: sigs.k8s.io/kind@v0.14.0
+
+
+- name: Playbook of configuring vagrant 
+  hosts: all
+  become: "yes"
+  gather_facts: yes
+  remote_user: "{{ ansible_user }}"
+  tags:
+  - vagrant
+  vars:
+    proxy_env:
+      http_proxy: http://localhost:1087
+      https_proxy: http://localhost:1087
+  environment: "{{proxy_env}}"
+
+  tasks:
+  - apt_key:
+      url: "https://apt.releases.hashicorp.com/gpg"
+      state: present
+  - apt_repository:
+      repo: deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_distribution_release | lower }} main
+      state: present
+      filename: hashicorp
+      update_cache: yes
+  - name: Install apt soft
+    apt:
+      state: present
+      name: 
+      - vagrant
+  - name: Install vagrant plugins
+    shell: 
+      cmd: |
+        vagrant plugin install vagrant-libvirt vagrant-vbguest
+          

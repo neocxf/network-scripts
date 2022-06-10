@@ -1,8 +1,8 @@
 ---
 - name: "station"
   vmw_box: "ignat/kubuntu-desktop-20.04"
-  ram: "8192"
-  vcpu: "6"
+  ram: "16384"
+  vcpu: "8"
   ip_addr: "192.168.65.200"
   pub_ip_addr: "192.168.1.200"
   nested: true

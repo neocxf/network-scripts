@@ -15,36 +15,12 @@ vagrant plugin install vagrant-disksize
 vagrant up
 ```
 
-## build sourceweb
+## ansible command
 
 ```bash
-wget https://releases.llvm.org/4.0.0/llvm-4.0.0.src.tar.xz
-# patch llvm
-# https://bugzilla.redhat.com/attachment.cgi?id=1389687&action=diff
-
-cd llvm-4.0.0.src/
-mkdir build && cd $_
-cmake ../
-cmake --build .
-sudo cmake --build . --target install
-
-
-wget https://releases.llvm.org/4.0.0/cfe-4.0.0.src.tar.xz
-# patch clang
-wget https://git.xirion.net/0x76/nixpkgs/src/commit/129fbd75501785f4e3308d6160590ba465964c5f/pkgs/development/compilers/llvm/4/clang/0001-Fix-compilation-w-gcc9.patch
-
-mkdir build && cd $_
-cmake ../
-cmake --build .
-sudo cmake --build . --target install
-
-sudo apt-get install qt5-make qtbase5-dev
-git clone  https://github.com/rprichard/CxxCodeBrowser.git
-cd CxxCodeBrowser
-mdkir build && cd $_
-../configure  --with-clang-dir /usr/local
-make -j 4
-sudo make install
+# ad-hoc commands for localhost setup
+ansible-galaxy install -r role.yml
+ansible-playbook provision.yml  --connection local --inventory 127.0.0.1, --limit 127.0.0.1 --tags vagrant
 ```
 
 # Refer

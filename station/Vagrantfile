@@ -83,6 +83,7 @@ sed -i -e 's/http:\/\/[^\/]*/http:\/\/mirrors.ustc.edu.cn/g' /etc/apt/sources.li
 sudo apt-get update
 sudo apt-get install -y vim net-tools openvswitch-switch virtualbox curl python3-pip dos2unix
 pip install paramiko pyyaml jinja2 markupsafe ansible -i https://mirrors.aliyun.com/pypi/simple/
+ansible-galaxy install -r /vagrant/role.yml
 __EOF__
 
       srv.vm.provision "shell", inline: $init_script

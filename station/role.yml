@@ -1,0 +1,8 @@
+# Install a role from GitHub
+- name: fubarhouse.golang
+- name: gantsign.golang
+- src: weareinteractive.environment
+# # Install a role from a specific git branch
+# - name: ansible-role-golang
+#   src: https://github.com/gantsign/ansible-role-golang
+#   version: origin/master

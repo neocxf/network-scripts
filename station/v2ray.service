@@ -5,10 +5,9 @@ After=docker.service
 [Service]
 Restart=always
 RestartSec=10s
-ExecStartPre=/bin/bash -c "mkdir -p /var/lib/v2ray/ && cd /var/lib/v2ray && curl -fsSL -u private-1634525515009:7a7f98fa576d8694b825a1ebc3ba5b994719ecdb 'https://fastonetech-generic.pkg.coding.net/tencent-cloudsim/private/config.json?version=latest' -o config.json"
+ExecStartPre=/bin/bash -c "mkdir -p /var/lib/v2ray/ && cd /var/lib/v2ray && curl -fsSL -u scripts-1654221944346:e921174460df295237820e2162ffd8335c81c89c 'https://nepspot-generic.pkg.coding.net/private/scripts/v2ray-config.json?version=latestt' -o config.json"
 ExecStartPre=/bin/bash -c "docker pull v2fly/v2fly-core"
-ExecStartPre=/bin/bash -c "/usr/bin/docker container inspect v2ray 2> /dev/null || \
-    docker run -d --name=v2ray --net=host -v /var/lib/v2ray/:/etc/v2ray/ v2fly/v2fly-core"
+ExecStartPre=/bin/bash -c "/usr/bin/docker container inspect v2ray 2> /dev/null || docker run -d --name=v2ray --net=host -v /var/lib/v2ray/:/etc/v2ray/ v2fly/v2fly-core"
 ExecStart=/usr/bin/docker start -a v2ray
 ExecStop=/usr/bin/docker stop -t 10 v2ray
 
