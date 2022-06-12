@@ -34,6 +34,7 @@ ip a add local 10.0.1.1/24 dev br0
 ip netns exec c1 ip r add default via 10.0.1.1
 ip netns exec c2 ip r add default via 10.0.1.1
 
+# we make cross vm container communicate with each other
 ip r add 10.0.0.0/24 via 192.168.56.4
 
 sysctl -w net.ipv4.ip_forward=1
