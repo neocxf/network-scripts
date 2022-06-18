@@ -20,7 +20,7 @@ vagrant up
 ```bash
 # ad-hoc commands for localhost setup
 ansible-galaxy install -r role.yml
-ansible-playbook provision.yml  --connection local --inventory 127.0.0.1, --limit 127.0.0.1 --tags vagrant
+ansible-playbook provision.yml -e ansible_user=vagrant  --connection local --inventory 127.0.0.1, --limit 127.0.0.1 --tags vagrant
 ```
 
 # Refer
