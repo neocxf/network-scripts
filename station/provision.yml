@@ -187,7 +187,8 @@
       - code
       - kubectl
       - multipass
-      - helm   
+      - helm
+      - lxd   
       classic: yes
   - name: Install apt soft
     apt:

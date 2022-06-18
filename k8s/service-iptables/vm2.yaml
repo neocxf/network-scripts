@@ -1,0 +1,11 @@
+write_files:
+  - path: /etc/netplan/99-static.yaml
+    content: |
+      network:
+        ethernets:
+          ens3:
+            addresses:
+              - 198.20.0.2/24      
+runcmd:
+  - netplan apply
+  - apt install net-tools bridge-utils  ipset ipvsadm
