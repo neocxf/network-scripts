@@ -234,15 +234,12 @@
   - gantsign.golang
   - fubarhouse.golang
   vars:
-    proxy_env:
-      http_proxy: http://localhost:1087
-      https_proxy: http://localhost:1087
     golang_version: '1.18.2'
     GOPATH: "/home/{{ ansible_user }}/go"
+    GOPROXY: https://goproxy.cn,direct
     go_get:
       - name: gopm
         url: sigs.k8s.io/kind@v0.14.0
-  environment: "{{proxy_env}}"
   tasks:
   - name: Adding go bin path to .bashrc file
     lineinfile: dest=/home/{{ ansible_user }}/.bashrc line='export PATH=$PATH:$HOME/go/bin' insertafter='EOF' regexp='export PATH=\$PATH:\$HOME/go/bin' state=present
@@ -286,4 +283,31 @@
     shell: 
       cmd: |
         vagrant plugin install vagrant-libvirt vagrant-vbguest
+          
+- name: Playbook of configuring kopia 
+  hosts: all
+  become: "yes"
+  gather_facts: yes
+  remote_user: "{{ ansible_user }}"
+  tags:
+  - kopia
+  vars:
+    proxy_env:
+      http_proxy: http://localhost:1087
+      https_proxy: http://localhost:1087
+  environment: "{{proxy_env}}"
+  tasks:
+  - shell:
+      cmd: |
+        curl -s https://kopia.io/signing-key | sudo gpg --dearmor -o /usr/share/keyrings/kopia-keyring.gpg
+  - apt_repository:
+      repo: deb [signed-by=/usr/share/keyrings/kopia-keyring.gpg] http://packages.kopia.io/apt/ stable main
+      state: present
+      filename: kopia
+      update_cache: yes
+  - name: Install kopia
+    apt:
+      state: present
+      name: 
+      - kopia
           
