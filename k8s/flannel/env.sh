@@ -1,0 +1,22 @@
+#!/bin/bash
+
+
+VM1_INET_DEV=$(ip r get 4.2.2.2 | awk '{ print $(NR+4) }')
+VM1_BRIG_IP=10.0.0.1/24
+VM1_BRIG_GW=10.0.0.1
+VM1_BRIG_NET=10.0.0.0/24
+VM1_C1_IP=10.0.0.11/24
+VM1_C2_IP=10.0.0.21/24
+VM1_C1_NET=10.0.0.11/32
+VM1_C1_HOST=10.0.0.11
+
+VM2_INET_DEV=$(ip r get 4.2.2.2 | awk '{ print $(NR+4) }')
+VM2_BRIG_IP=10.0.1.1/24
+VM2_BRIG_GW=10.0.1.1
+VM2_BRIG_NET=10.0.1.0/24
+VM2_C1_IP=10.0.1.11/24
+VM2_C2_IP=10.0.1.21/24
+VM2_C1_NET=10.0.1.11/32
+VM2_C1_HOST=10.0.1.11
+
+alias ipt="sudo iptables -t nat -nvL"

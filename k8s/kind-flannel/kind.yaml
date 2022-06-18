@@ -1,0 +1,26 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+networking:
+  disableDefaultCNI: true # disable kindnet
+  podSubnet: "10.244.0.0/16"
+  serviceSubnet: "10.96.0.0/12"
+  # kubeProxyMode: "ipvs"
+nodes:
+- role: control-plane
+  extraMounts:
+  - hostPath: /usr/local/bin/crictl 
+    containerPath: /usr/local/bin/crictl
+  - hostPath: /usr/local/bin/flanneld 
+    containerPath: /usr/local/bin/flanneld
+- role: worker
+  extraMounts:
+  - hostPath: /usr/local/bin/crictl 
+    containerPath: /usr/local/bin/crictl
+  - hostPath: /usr/local/bin/flanneld 
+    containerPath: /usr/local/bin/flanneld
+- role: worker
+  extraMounts:
+  - hostPath: /usr/local/bin/crictl 
+    containerPath: /usr/local/bin/crictl
+  - hostPath: /usr/local/bin/flanneld 
+    containerPath: /usr/local/bin/flanneld
