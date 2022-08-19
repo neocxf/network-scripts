@@ -1,0 +1,15 @@
+[Unit]
+Description=v2ray container service
+After=docker.service
+
+[Service]
+Restart=always
+RestartSec=10s
+ExecStartPre=/bin/bash -c "mkdir -p /var/lib/v2ray/ && cd /var/lib/v2ray  && [ -f /var/lib/v2ray/config.json ] || curl -fL -u scripts-1655542383977:39e19348d876d7bdec2feb857169c6b42b6d3daa "https://nepspot-generic.pkg.coding.net/private/scripts/v2ray-config.json?version=latest" -o config.json"
+ExecStartPre=/bin/bash -c "docker pull v2fly/v2fly-core"
+ExecStartPre=/bin/bash -c "/usr/bin/docker container inspect v2ray 2> /dev/null || docker run -d --name=v2ray --net=host -v /var/lib/v2ray/:/etc/v2ray/ v2fly/v2fly-core"
+ExecStart=/usr/bin/docker start -a v2ray
+ExecStop=/usr/bin/docker stop -t 10 v2ray
+
+[Install]
+WantedBy=multi-user.target

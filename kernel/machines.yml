@@ -1,0 +1,10 @@
+---
+- name: "kernel"
+  vmw_box: "ubuntu/trusty64"
+  ram: "8192"
+  vcpu: "4"
+  ip_addr: "192.168.65.201"
+  pub_ip_addr: "192.168.1.201"
+  nested: true
+  provision: "provision.yml"
+  sync_disabled: false
