@@ -131,6 +131,10 @@
       # - bird2
       - ipcalc
       - tshark
+      - iftop # https://www.tecmint.com/linux-network-bandwidth-monitoring-tools/
+      - nload
+      - nethogs
+      - bmon
 
 
 - name: Playbook various softwares
