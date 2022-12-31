@@ -143,7 +143,7 @@
   gather_facts: yes
   remote_user: "{{ ansible_user }}"
   tags:
-  - misc
+  - softwares
   vars:
     proxy_env:
       http_proxy: http://10.0.2.2:1088
@@ -203,16 +203,13 @@
       - tree
       - jq
       - zsh
-  - name: Install Oh My Zsh
-    shell: curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh
-    register: myzsh
-    failed_when: myzsh.rc not in [0,1]
+
 
 - name: Playbook to show some env
   hosts: all
   gather_facts: yes
   tags:
-  - misc
+  - env
   tasks:
   - debug: var=hostvars[inventory_hostname].private_ipv4
   - debug: var=hostvars[inventory_hostname]['ansible_default_ipv4']['address']
@@ -226,6 +223,42 @@
   - name: debug output
     debug:
       var: user_home.stdout
+
+  - name: Copy keys
+    ansible.builtin.copy:
+      src: keys/
+      dest: {{ ansible_env.HOME }}/.ssh
+      owner: {{ ansible_user }}
+      group: {{ ansible_user }}
+      mode: '0644'
+
+  - name: Install Oh My Zsh
+    shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    register: myzsh
+    ignore_errors: true
+    # failed_when: myzsh.rc not in [0,1]
+
+  - name: Ensure ssh-agent is sourced from the .bashrc
+    blockinfile:
+      dest: "{{ ansible_env.HOME }}/.bashrc"
+      block: |
+        eval $(ssh-agent -s)
+        ssh-add $HOME/.ssh/fastone-deploy.pem 2>&1  >/dev/null
+        ssh-add $HOME/.ssh/id_rsa 2>&1  >/dev/null
+      marker: '# {mark} ANSIBLE MANAGED BLOCK - ssh-agent'
+      insertafter: EOF
+      create: yes
+
+  - name: Ensure ssh-agent is sourced from the .zshrc
+    blockinfile:
+      dest: "{{ ansible_env.HOME }}/.zshrc"
+      block: |
+        eval $(ssh-agent -s)
+        ssh-add $HOME/.ssh/fastone-deploy.pem 2>&1  >/dev/null
+        ssh-add $HOME/.ssh/id_rsa 2>&1  >/dev/null
+      marker: '# {mark} ANSIBLE MANAGED BLOCK - ssh-agent'
+      insertafter: EOF
+      create: yes
 
 - name: Playbook of install golang package
   hosts: all
@@ -246,13 +279,17 @@
   tasks:
   - name: Adding go bin path to .bashrc file
     lineinfile: dest=/home/{{ ansible_user }}/.bashrc line='export PATH=$PATH:/opt/go/{{ golang_version }}/bin:$HOME/go/bin' insertafter='EOF' regexp='export PATH=\$PATH:\$HOME/go/bin' state=present
-  # - import_role:
-  #     name: fubarhouse.golang
-  #   become_user: root
-  #   vars:
-  #     go_get:
-  #     - name: gopm
-  #       url: sigs.k8s.io/kind@v0.14.0
+  - name: Adding go bin path to .zshrc file
+    blockinfile:
+      dest: "{{ ansible_env.HOME }}/.zshrc"
+      block: |
+        export PATH=$PATH:/opt/go/{{ golang_version }}/bin:$HOME/go/bin
+        export GOPROXY="https://goproxy.cn,direct"
+        export GOPATH="/home/{{ ansible_user }}/go"
+        export GOROOT=/opt/go/{{ golang_version }}
+      marker: '# {mark} ANSIBLE MANAGED BLOCK - golang'
+      insertafter: EOF
+      create: yes
 
 
 - name: Playbook of configuring vagrant
@@ -313,6 +350,12 @@
       state: present
       name:
       - kopia
+
+
+
+
+
+
 
 
 

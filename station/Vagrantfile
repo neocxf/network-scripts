@@ -82,7 +82,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 sed -i -e 's/http:\/\/[^\/]*/http:\/\/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 sudo apt-get update
 sudo apt-get install -y vim net-tools openvswitch-switch virtualbox curl python3-pip dos2unix ansible
-# pip install paramiko pyyaml jinja2 markupsafe ansible -i https://mirrors.aliyun.com/pypi/simple/
 ansible-galaxy install -r /vagrant/role.yml
 __EOF__
 
