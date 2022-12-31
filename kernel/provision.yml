@@ -142,8 +142,8 @@
   - misc
   vars:
     proxy_env:
-      http_proxy: http://localhost:1087
-      https_proxy: http://localhost:1087
+      http_proxy: http://localhost:1088
+      https_proxy: http://localhost:1088
   environment: "{{proxy_env}}"
 
   tasks:
@@ -261,8 +261,8 @@
   - vagrant
   vars:
     proxy_env:
-      http_proxy: http://localhost:1087
-      https_proxy: http://localhost:1087
+      http_proxy: http://localhost:1088
+      https_proxy: http://localhost:1088
   environment: "{{proxy_env}}"
 
   tasks:
@@ -293,8 +293,8 @@
   - kopia
   vars:
     proxy_env:
-      http_proxy: http://localhost:1087
-      https_proxy: http://localhost:1087
+      http_proxy: http://localhost:1088
+      https_proxy: http://localhost:1088
   environment: "{{proxy_env}}"
   tasks:
   - shell:

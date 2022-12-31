@@ -48,10 +48,10 @@ while true; do
         ;;
     -e | --enable)
         echo "enable proxy ..."
-        export http_proxy=socks5://${MASTER_IP:-127.0.0.1}:1088
-        export https_proxy=socks5://${MASTER_IP:-127.0.0.1}:1088
-        export HTTP_PROXY=socks5://${MASTER_IP:-127.0.0.1}:1088
-        export HTTPS_PROXY=socks5://${MASTER_IP:-127.0.0.1}:1088
+        export http_proxy=http://${MASTER_IP:-127.0.0.1}:1088
+        export https_proxy=http://${MASTER_IP:-127.0.0.1}:1088
+        export HTTP_PROXY=http://${MASTER_IP:-127.0.0.1}:1088
+        export HTTPS_PROXY=http://${MASTER_IP:-127.0.0.1}:1088
         export no_proxy="localhost,$MASTER_IP,127.0.0.1,.example.com"
         export NO_PROXY="localhost,$MASTER_IP,127.0.0.1,.example.com"
         shift

@@ -89,8 +89,8 @@
   remote_user: "vagrant"
   vars:
     proxy_env:
-      http_proxy: http://localhost:1087
-      https_proxy: http://localhost:1087
+      http_proxy: http://localhost:1088
+      https_proxy: http://localhost:1088
   environment: "{{proxy_env}}"
 
   tasks:

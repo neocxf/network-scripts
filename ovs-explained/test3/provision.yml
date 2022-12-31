@@ -84,7 +84,7 @@
   # here we make a variable named "proxy_env" that is a dictionary
   vars:
     proxy_env:
-      http_proxy: http://192.168.100.100:1087
+      http_proxy: http://192.168.100.100:1088
   tasks:
   - name: Download Cirros image
     get_url:

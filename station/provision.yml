@@ -24,7 +24,7 @@
   - name: "Install KVM and Libvirt"
     apt:
       state: "present"
-      name: 
+      name:
       - qemu
       - qemu-kvm
       - libvirt-dev
@@ -116,7 +116,7 @@
   remote_user: "{{ ansible_user }}"
   tags:
   - network
-  
+
   tasks:
   - name: Install network apt softwares
     apt:
@@ -146,15 +146,15 @@
   - misc
   vars:
     proxy_env:
-      http_proxy: http://localhost:1087
-      https_proxy: http://localhost:1087
+      http_proxy: http://10.0.2.2:1088
+      https_proxy: http://10.0.2.2:1088
   environment: "{{proxy_env}}"
 
   tasks:
   - name: Get latest docker compose download url
     shell: curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r '.assets[] | select (.name == "docker-compose-linux-x86_64") | .browser_download_url'
     register: compose_url
-  - debug: 
+  - debug:
       var: compose_url.stdout
   - name: Create $HOME/.docker/cli-plugins/ dir
     become_user: "{{ ansible_user }}"
@@ -173,7 +173,7 @@
   - name: Get latest kube-prompt version
     shell: curl -s https://api.github.com/repos/c-bata/kube-prompt/releases/latest | jq -r '.tag_name'
     register: kube_prompt_version
-  - debug: 
+  - debug:
       var: kube_prompt_version.stdout
   - name: Install kube-prompt
     ansible.builtin.unarchive:
@@ -185,19 +185,19 @@
       src: switch
       dest: /usr/local/bin/switch
       mode: 0755
-  - name: Install snap soft
-    community.general.snap:
-      name:
-      - code
-      - kubectl
-      - multipass
-      - helm
-      - lxd   
-      classic: yes
+  # - name: Install snap soft
+  #   community.general.snap:
+  #     name:
+  #     - code
+  #     - kubectl
+  #     - multipass
+  #     - helm
+  #     - lxd
+  #     classic: yes
   - name: Install apt soft
     apt:
       state: present
-      name: 
+      name:
       - awscli
       - htop
       - tree
@@ -238,15 +238,14 @@
   - gantsign.golang
   - fubarhouse.golang
   vars:
-    golang_version: '1.18.2'
+    golang_version: '1.19.4'
+    golang_install_dir: '/opt/go/{{ golang_version }}'
     GOPATH: "/home/{{ ansible_user }}/go"
     GOPROXY: https://goproxy.cn,direct
-    go_get:
-      - name: gopm
-        url: sigs.k8s.io/kind@v0.14.0
+    GOROOT: '/opt/go/{{ golang_version }}'
   tasks:
   - name: Adding go bin path to .bashrc file
-    lineinfile: dest=/home/{{ ansible_user }}/.bashrc line='export PATH=$PATH:$HOME/go/bin' insertafter='EOF' regexp='export PATH=\$PATH:\$HOME/go/bin' state=present
+    lineinfile: dest=/home/{{ ansible_user }}/.bashrc line='export PATH=$PATH:/opt/go/{{ golang_version }}/bin:$HOME/go/bin' insertafter='EOF' regexp='export PATH=\$PATH:\$HOME/go/bin' state=present
   # - import_role:
   #     name: fubarhouse.golang
   #   become_user: root
@@ -256,7 +255,7 @@
   #       url: sigs.k8s.io/kind@v0.14.0
 
 
-- name: Playbook of configuring vagrant 
+- name: Playbook of configuring vagrant
   hosts: all
   become: "yes"
   gather_facts: yes
@@ -265,8 +264,8 @@
   - vagrant
   vars:
     proxy_env:
-      http_proxy: http://localhost:1087
-      https_proxy: http://localhost:1087
+      http_proxy: http://10.0.2.2:1088
+      https_proxy: http://10.0.2.2:1088
   environment: "{{proxy_env}}"
 
   tasks:
@@ -281,14 +280,14 @@
   - name: Install apt soft
     apt:
       state: present
-      name: 
+      name:
       - vagrant
   - name: Install vagrant plugins
-    shell: 
+    shell:
       cmd: |
         vagrant plugin install vagrant-libvirt vagrant-vbguest
-          
-- name: Playbook of configuring kopia 
+
+- name: Playbook of configuring kopia
   hosts: all
   become: "yes"
   gather_facts: yes
@@ -297,8 +296,8 @@
   - kopia
   vars:
     proxy_env:
-      http_proxy: http://localhost:1087
-      https_proxy: http://localhost:1087
+      http_proxy: http://10.0.2.2:1088
+      https_proxy: http://10.0.2.2:1088
   environment: "{{proxy_env}}"
   tasks:
   - shell:
@@ -312,6 +311,11 @@
   - name: Install kopia
     apt:
       state: present
-      name: 
+      name:
       - kopia
-          
+
+
+
+
+
+
