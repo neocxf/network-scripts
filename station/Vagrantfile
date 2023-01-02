@@ -23,7 +23,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Always use Vagrant's default insecure key
   config.ssh.insert_key = true
-  config.disksize.size = '100GB'
+  config.disksize.size = '200GB'
 
   provisioner = Vagrant::Util::Platform.windows? ? :guest_ansible : :ansible
 
@@ -91,6 +91,7 @@ __EOF__
       if machine['provision'] != nil
         srv.vm.provision provisioner do |ansible|
           ansible.playbook = machine['provision']
+          ansible.inventory_path = 'ansible_hosts'
         end # srv.vm.provision
       end # if machine['provision']
     end # config.vm.define

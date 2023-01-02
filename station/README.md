@@ -5,7 +5,6 @@
 ```bash
 vagrant plugin install vagrant-winnfsd
 vagrant plugin install vagrant-guest_ansible
-vagrant plugin install vagrant-guest_ansible
 vagrant plugin install vagrant-disksize
 ```
 

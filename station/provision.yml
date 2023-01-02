@@ -3,7 +3,7 @@
   hosts: "all"
   become: "yes"
   remote_user: "{{ ansible_user }}"
-  gather_facts: no
+  gather_facts: yes
   tags:
   - libvirt
   tasks:
@@ -170,6 +170,10 @@
       mode: u+x
       validate_certs: no
       timeout: 30
+    register: get_docker_compose
+  - debug:
+      msg="docker-compose was downloaded"
+    when: get_docker_compose|changed
   - name: Get latest kube-prompt version
     shell: curl -s https://api.github.com/repos/c-bata/kube-prompt/releases/latest | jq -r '.tag_name'
     register: kube_prompt_version
@@ -182,7 +186,7 @@
       remote_src: yes
   - name: Copy switch to /usr/local/bin/
     copy:
-      src: switch
+      src: keys/switch
       dest: /usr/local/bin/switch
       mode: 0755
   # - name: Install snap soft
@@ -210,6 +214,12 @@
   gather_facts: yes
   tags:
   - env
+  vars:
+    proxy_env:
+      http_proxy: http://10.0.2.2:1088
+      https_proxy: http://10.0.2.2:1088
+  environment: "{{proxy_env}}"
+
   tasks:
   - debug: var=hostvars[inventory_hostname].private_ipv4
   - debug: var=hostvars[inventory_hostname]['ansible_default_ipv4']['address']
@@ -227,9 +237,9 @@
   - name: Copy keys
     ansible.builtin.copy:
       src: keys/
-      dest: {{ ansible_env.HOME }}/.ssh
-      owner: {{ ansible_user }}
-      group: {{ ansible_user }}
+      dest: "{{ ansible_env.HOME }}/.ssh"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
       mode: '0644'
 
   - name: Install Oh My Zsh
